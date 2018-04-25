@@ -27,22 +27,18 @@ void mycat ( char *fileName ) {
         if ( fileName[i] == '>' )
         {
             outputFlag = 0;
-            printf("Output detected\n");
             int outCount = 0;
             for ( int n = i+1; (fileName[n] != '\0') 
                     && (fileName[n] != ' '); ++n )
             {
                 outputFile[outCount] = fileName[n];
                 ++outCount;
-                printf("%c", fileName[n]);
             }
             exitFlag = 0;
-        printf("%s\n\n\n", outputFile);
         }
         else if ( fileName[i] == '<' )
         {
             inputFlag = 0;
-            printf("Input Detected\n");
             int inCount = 0;
             for ( int j = i+1; (fileName[j] != '\0') && (fileName[j] != '>') 
                 && (fileName[j] != ' '); ++j )
