@@ -11,7 +11,7 @@
 
 void info(char *filename);
 
-void myls (int size, char **argv) {
+int main (int size, char **argv) {
 	struct dirent *dr;
 	DIR *dp;
 
@@ -38,7 +38,7 @@ void myls (int size, char **argv) {
 	} 
 	else if(size == 3) {
 		if(strcmp(argv[1], "-l") == 0) {
-			printf("50\n");
+			printf("\n");
 			info(argv[2]);
 			
 		} else {
