@@ -122,3 +122,8 @@ void mycp(int size, char **argv) {
 	close(ofd);
 	close(nfd);
 }
+			       
+int main( int argc, char * argv[])
+{
+	mycp(arg,argv);
+}
