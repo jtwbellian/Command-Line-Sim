@@ -27,7 +27,7 @@ void mycp(int size, char **argv) {
 				printf("%s ", argv[i]);
 			}
 
-			printf(": Invalid option\n");
+			printf(": Invalid option\nusage : mycp [FILENAME] [FILENAME]\n");
 
 			return;
 		}
@@ -45,7 +45,7 @@ void mycp(int size, char **argv) {
 			printf("%s ", argv[i]);
 		}
 
-		printf(": Invalid option\n");
+		printf(": Invalid option\nusage : mycp [FILENAME] [FILENAME]\n"");
 
 		return;
 	} 
@@ -88,7 +88,7 @@ void mycp(int size, char **argv) {
 				printf("%s ", argv[i]);
 			}
 
-			printf(": Invalid option\n");
+			printf(": Invalid option\nusage : mycp [FILENAME] [FILENAME]\n"");
 			return;
 		}
 	}
