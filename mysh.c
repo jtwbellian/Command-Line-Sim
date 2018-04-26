@@ -19,6 +19,7 @@ char* customFunc[] = {"mycd", "pwd", "mycp", "mycat", "myls"};
 void getLine(char str[]){
 	fgets(str, CHAR_LEN, stdin);
 	int i = 0;
+	
 	while(str[i] != '\n'){ i++; }
 	str[i] = '\0';
 }
@@ -28,6 +29,7 @@ int parseLine(char* wordArr[], char str[]){
 	int i = 0;
 	char* token = " ";
 	wordArr[i] = strtok(str, token);
+	
 	if (wordArr[i] == NULL) { return -1; }
 	while(wordArr[i] != NULL){
 		wordArr[++i] = strtok(NULL, token);
@@ -37,10 +39,11 @@ int parseLine(char* wordArr[], char str[]){
 
 //Get and parse the line
 int getAndParse(char* wordArr[], char str[]){
-	printf("Group 1 mysh $:");
+	printf("Group-1-mysh-$:");
 	int n;
 	getLine(str);
 	n = parseLine(wordArr, str);
+	
 	if (n == -1){ 
 		printf("No command entered...\n");
 	}
@@ -65,18 +68,29 @@ int findFunc(char* wordArr[]){
 				strcpy(dest, "./");
 				strcat(dest, wordArr[0]);
 				execvp(dest, wordArr);
+				return 1;
 			}
 			else if(strcmp(wordArr[0], "mycat") == 0){
 				char dest[50];
 				strcpy(dest, "./");
 				strcat(dest, wordArr[0]);
 				execvp(dest, wordArr);
+				return 1;
 			}
+			else if(strcmp(wordArr[0], "myls") == 0){
+                                char dest[50];
+                                strcpy(dest, "./");
+                                strcat(dest, wordArr[0]);
+                                execvp(dest, wordArr);
+                                return 1;
+                        }
+
 			else{
 				char dest[50];
 				strcpy(dest, "./");
 				strcat(dest, wordArr[0]);
 				execvp(dest, wordArr);
+				return 1;
 			}	
 		}
 	}
@@ -84,6 +98,8 @@ int findFunc(char* wordArr[]){
 	if(execvp(wordArr[0], wordArr) < 0){
 		printf("Command doesn't exist! Enter another command.\n");
 	}
+
+	return 0;
 }
 
 int main(int argc, char* argv[]){
@@ -95,6 +111,7 @@ int main(int argc, char* argv[]){
 	printf("Enter commands that you would like to run\n");
 	printf("Hold ctrl+c to exit at any time...\n");
 	printf("--------------------------\n");
+	
 	while(getAndParse(wordArr, str)){
 		if ((pid = fork()) == 0){
 			findFunc(wordArr);		
@@ -103,4 +120,7 @@ int main(int argc, char* argv[]){
 			wait(NULL);
 		}
 	}
+
+	return 1;
+
 }

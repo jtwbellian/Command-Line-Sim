@@ -6,13 +6,11 @@ OBJS = mysh.o
 TARGET = mysh
 DEPS = builtin.c mysh.c
 
-
 mysh: $(OBJS)
-	$(CC) -o $(TARGET) $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET)
 
-mysh.o: $(DEPS)
-	#(CC) $(CFLAGS) -o mysh.o 
-
+mysh.o: mysh.c builtin.c
+	$(CC) $(CFLAGS) mysh.c 
 
 clean:
 	rm -f $(OBJS)
