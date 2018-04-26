@@ -34,7 +34,6 @@ int parseLine(char* wordArr[], char str[]){
 }
 
 //Get and parse the line
-//Returns -1 if no command entered
 int getAndParse(char* wordArr[], char str[]){
 	printf("Group 1 mysh $:");
 	int n;
