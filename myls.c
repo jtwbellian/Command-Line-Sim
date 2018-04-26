@@ -11,7 +11,7 @@
 
 void info(char *filename);
 
-int main (int size, char **argv) {
+void myls (int size, char **argv) {
 	struct dirent *dr;
 	DIR *dp;
 
