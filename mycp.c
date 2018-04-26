@@ -125,5 +125,5 @@ void mycp(int size, char **argv) {
 			       
 int main( int argc, char * argv[])
 {
-	mycp(arg,argv);
+	mycp(argc,argv);
 }
