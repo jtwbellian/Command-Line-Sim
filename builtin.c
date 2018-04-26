@@ -4,6 +4,7 @@
 
 #include<stdio.h>
 #include<string.h>
+
 #define MAXSIZE 500
 
 int mycd(char * comm[])
@@ -27,7 +28,7 @@ int mycd(char * comm[])
 
 }
 
-int pwd()
+void pwd()
 {
 	char wd[MAXSIZE];
 	getcwd(wd,MAXSIZE);	
