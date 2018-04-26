@@ -1,1 +1,0 @@
-void myps(int, char **);
