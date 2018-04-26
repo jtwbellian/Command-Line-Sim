@@ -1,0 +1,1 @@
+void myrmdir(int, char **);

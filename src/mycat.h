@@ -1,0 +1,1 @@
+void mycat(int, char **);

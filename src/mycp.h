@@ -1,0 +1,1 @@
+void mycp(int, char **);

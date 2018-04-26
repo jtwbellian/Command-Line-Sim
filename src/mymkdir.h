@@ -1,0 +1,1 @@
+void mymkdir(int, char **);

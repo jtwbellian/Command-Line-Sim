@@ -1,0 +1,1 @@
+void myinput(int, char **);
