@@ -1,1 +1,0 @@
-void myenv(int, char **);
