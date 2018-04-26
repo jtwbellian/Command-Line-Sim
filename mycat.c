@@ -7,10 +7,11 @@
 #include <stdbool.h>
 
 void mycat ( char *fileToOpen, char *outputFile, int argc ) {
-
     int outputFlag = 1;
-    
-
+    if ( argc == 3 )
+    {
+        outputFlag = 0;
+    }
     if ( (access ( fileToOpen, F_OK ) != -1) && (outputFlag == 1) )
     {
         FILE *fptr = fopen(fileToOpen, "r");
