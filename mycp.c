@@ -1,158 +1,124 @@
-#include<sys/stat.h>   
-#include<sys/types.h>   
-#include<unistd.h>   
-#include<fcntl.h>   
-#include<dirent.h>   
-#include<stdio.h>   
-#include<string.h>   
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-/* Check if its a directory or a file */
-int type(const char *path){   
-    struct stat bf;   
-    if(stat(path, &bf) == -1){ 
-        printf("dir(%s), stat(%s) error!\n",path, path);   
-          return 0;   
-    }   
-    if((S_IFMT & bf.st_mode) == S_IFDIR) {   
-        return 1;   
-    }   
-    else   
-        return 0;   
-}
+void mycp(int size, char **argv) {
+	int ofd, nfd;
+	int old, new;
+	char buf[256];
+	char *reverse;
+	char *source;
+	char *dest;
 
-int copy(const char *src, const char *dest) {
-	int fin, fout, count;
-	char buffer[BUFSIZ];
-	struct stat old_mode;
-	if(stat(src, &old_mode) == -1){ 
-		printf("cp: (%s) : No such file or directory!\n",src);   
-		return 0;   
-    }
+	if(size == 2) {
+		if(strcmp(argv[1], "--help") == 0) {
+			printf("mycp command copies a file to a destination file\n");
+			printf("usage : mycp [-reverse] [FILENAME] [FILENAME]\n");
+			printf("[option] --help : print mycp command usage.\n\t-reverse : copy file reverse\n");
 
-    /* Open input and output files */
-    if( (fin = open(src, O_RDONLY)) == -1){   
-        printf("cp:(%s, %s), stat(%s) error!\n", src, dest, src);   
-		return 0;
+			return;
+		} else {
+			int i;
+			for(i = 0; i < size; i++) {
+				printf("%s ", argv[i]);
+			}
+
+			printf(": Invalid option\n");
+
+			return;
+		}
+	} else if(size == 3) {
+		source = argv[1];
+		dest = argv[2];
+
+	} else if(size == 4) {
+		source = argv[2];
+		dest = argv[3];
+
+	} else {
+		int i;
+		for(i = 0; i < size; i++) {
+			printf("%s ", argv[i]);
+		}
+
+		printf(": Invalid option\n");
+
+		return;
+	} 
+
+	ofd = open(source, O_RDONLY);
+	if(ofd == -1) {
+		int i;
+		for(i = 0; i < size; i++) {
+			printf("%s ", argv[i]);
+		}
+
+		printf(": cannot open file\n");
+		return;
 	}
-    if((fout = open(dest, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR)) == -1){
-        printf("cp:(%s, %s), can't open %s.\n", src, dest, src);   
-		close(fin);
-		return 0;
-	}
+	old = read(ofd, buf, sizeof(buf));
+	if(old == -1) {
+		int i;
+		for(i = 0; i < size; i++) {
+			printf("%s ", argv[i]);
+		}
 
-	 /* Transfer data until we encounter end of input or an error */
-	//count = read(fin, buffer, BUFSIZ);
-    while((count = read(fin, buffer, BUFSIZ)) > 0){   
-		if(write(fout, buffer, count) != count) {
-			printf("CAN NOT WRITE TO DESTINATION\n");
-			close(fin);
-			close(fout);
-			return 0;
+		printf(": cannot read file\n");
+		return;
+	}
+	buf[old] = '\0';
+
+	if(size == 4) {
+		if(strcmp(argv[1], "-reverse") == 0) {
+			int i = 0;
+			int j;
+			reverse = (char *)malloc(strlen(buf));
+				for(j = strlen(buf)-1; j > 0; j--) {
+					reverse[i++] = buf[j];
+				}
+			printf("%s\n", reverse);
+			strcpy(buf, reverse);
+		} else {
+			int i;
+			for(i = 0; i < size; i++) {
+				printf("%s ", argv[i]);
+			}
+
+			printf(": Invalid option\n");
+			return;
 		}
 	}
-	close(fin);
-	close(fout);
-	return 1;
-}
-/* Function to get the name of the file or directory */
-void getName(char *bf, char *name)   
-{   
-    int i,n, j;   
-    n = strlen(bf);  
-    for(i = n - 1; i >=0 ; i--){   
-        if(bf[i]=='/'){   
-            break;   
-        }   
-    }   
-    for(i++, j = 0; i < n; i++, j++)   
-        name[j] = bf[i];   
-    name[j] = '\0';   
-}  
 
-void recursion(const char *src, const char *dest){
-	char bffsrc[BUFSIZ], bffdest[BUFSIZ], name[BUFSIZ]; 
-	int flag = type(src); /* Create a flag to check directory/file */
-	strcpy(bffsrc, src);   /* Copy */
-    strcpy(bffdest, dest);  /* Copy  */
-    
-    /* If it's a regular file */
-    if(flag == 0){
-    	getName(bffsrc, name); /* Get the file name */
-    	strcat(bffdest, "/");
-     	strcat(bffdest, name);    /* Append src to the end of dest */
-     	copy(bffsrc, bffdest);   
-     	return;
-     }
-     /* If it's a directory */
-     else if(flag == 1){
-     	getName(bffsrc, name); /* Get directory name*/
-        strcat(bffdest, "/");  
-        strcat(bffdest, name); /* Append src to the end of dest */
+	int acc;
+	if(acc = (access(dest, F_OK)) == -1) {
+		nfd = open(dest, O_CREAT | O_WRONLY, 0644);
+	} else if(acc == 0) {
+		nfd = open(dest, O_WRONLY | O_TRUNC);
+	}
+	if(nfd == -1) {
+		int i;
+		for(i = 0; i < size; i++) {
+			printf("%s ", argv[i]);
+		}
 
-        if(strcmp(name, ".") ==0 || strcmp(name, "..") ==0 ){ 
-        	return;
-        }
-    	
-    	struct stat old_mode; 
+		printf(": cannot open file\n");
+		return;
+	}
 
-        if(stat(src, &old_mode) == -1){
-        	printf("Error!\n");   
-        	return;  
-        }
-   
-        mkdir(bffdest, old_mode.st_mode); /* Create destination dir */
-        chmod(bffdest, old_mode.st_mode); /* Change mode of destination dir */
+	if(write(nfd, buf, strlen(buf)) != strlen(buf)) {
+		int i;
+		for(i = 0; i < size; i++) {
+			printf("%s ", argv[i]);
+		}
 
-        DIR * pdir = opendir(bffsrc);   
-        struct dirent * pdirent;   
+		printf(": cannot read file\n");
+		return;
+	}
 
-        while(1){
-        	pdirent = readdir(pdir);
-        	if(pdirent == NULL){
-        		break;
-        	}
-        	else{
-        		strcpy(bffsrc, src); /* Copy files */
-                strcat(bffsrc, "/");   
-                strcat(bffsrc, pdirent->d_name);    
-                mkdir(dest, old_mode.st_mode); 	/* Create directory if it doesnt exist */
-                mkdir(bffdest, old_mode.st_mode); 
-        		//chmod(bffdest, old_mode.st_mode); /*change mode of bfto  */
-                recursion(bffsrc, bffdest); 
-        	}
-        }
-        closedir(pdir);
-        return;
-    }
-    else
-    	return;
-}
-int executecp(int argc, char*argv[]){    
-    char *src, *dest;
-
-    if(argc <3){
-    	printf("File Usage: %s source destination\n", argv[0]);
-    	printf("Recursive Usage: %s -R source destination\n", argv[0]);
-    	return 0;
-    }
-    if(strncmp(argv[1], "-R", 5) != 0 && argc >4 ){
-    	printf("Usage: %s -R source destination\n", argv[0]);
-    	return 0;
-    }
-    if(strncmp(argv[1], "-R", 5) == 0){
-    	src = argv[2];
-        dest = argv[3];
-        recursion(src, dest);
-    }
-    else{
-        src = argv[1];
-        dest = argv[2];
-        copy(src, dest);
-    }
-    return 0;
-}
-
-int main(int argc, char *argv[]) {
-    return executecp(argc, argv);
-
+	close(ofd);
+	close(nfd);
 }
