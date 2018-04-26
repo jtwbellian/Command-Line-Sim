@@ -1,3 +1,5 @@
+//Written by John Barulich
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdio.h>
