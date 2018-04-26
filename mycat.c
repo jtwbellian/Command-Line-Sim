@@ -7,11 +7,22 @@
 #include <stdbool.h>
 
 void mycat ( char *fileToOpen, char *outputFile, int argc ) {
+  
     int outputFlag = 1;
     if ( argc == 3 )
     {
         outputFlag = 0;
+        char *outputthing = strstr(outputFile, ">");
+        if (outputthing) {
+            outputFile++;
+        }
     }
+    
+    char *inputthing = strstr(fileToOpen, "<");
+    if (inputthing) {
+        fileToOpen++;
+    }
+
     if ( (access ( fileToOpen, F_OK ) != -1) && (outputFlag == 1) )
     {
         FILE *fptr = fopen(fileToOpen, "r");
@@ -31,8 +42,6 @@ void mycat ( char *fileToOpen, char *outputFile, int argc ) {
     }
     else if ((access ( fileToOpen, F_OK ) != -1) && (outputFlag == 0))
     {
-        printf("writing to file: %s", outputFile);
-
         FILE *fptr = fopen(fileToOpen, "r");
         if (fptr == NULL)
         {
@@ -57,12 +66,13 @@ void mycat ( char *fileToOpen, char *outputFile, int argc ) {
 }
 
 int main (int argc, char** argv) {
+
     if (argc <= 1)
     {
         printf("No file specified");
         exit(1);
     }
-
+  
     mycat(argv[1], argv[2], argc);
     return 0;
 }
