@@ -1,31 +1,16 @@
-CC=gcc
-CFLAGS= -g -Wall
-OBJS=mysh.o mycd.o mypwd.o myls.o mycat.o mycp.o
-RUN_NAME=mysh
+# Makefile for the shell
 
-all: add
+CC = gcc 
+CFLAGS = -Wall -c 
+OBJS = mysh.o 
+TARGET = mysh
+DEPS = builtin.c mysh.c
 
-add: $(OBJS)
-	$(CC) $(CFLAGS) -o $(RUN_NAME) $(OBJS) $(LIBS)
+mysh: $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET)
 
-mysh.o: mysh.c
-	$(CC) $(CFLAGS) -c mysh.c
-
-mycd.o: mycd.c
-	$(CC) $(CFLAGS) -c mycd.c
-
-mypwd.o: mypwd.c
-	$(CC) $(CFLAGS) -c mypwd.c
-
-myls.o: myls.c
-	$(CC) $(CFLAGS) -c myls.c
-
-mycat.o: mycat.c
-	$(CC) $(CFLAGS) -c mycat.c
-
-mycp.o: mycp.c
-	$(CC) $(CFLAGS) -c mycp.c
+mysh.o: mysh.c builtin.c
+	$(CC) $(CFLAGS) mysh.c 
 
 clean:
-	rm -rf $(RUN_NAME)
-	rm -rf $(OBJS)
+	rm -f $(OBJS)
